@@ -1,7 +1,18 @@
+import enumeration.StatusOfTask;
+import manager.HistoryManager;
+import manager.InMemoryHistoryManager;
+import manager.TaskManager;
+import manager.InMemoryTaskManager;
+import tasks.Epic;
+import tasks.Subtask;
+import tasks.Task;
+
 public class Main {
 
     public static void main(String[] args) {
-        TaskManager taskManager = new TaskManager();
+        HistoryManager historyManager = new InMemoryHistoryManager();
+
+        TaskManager taskManager = new InMemoryTaskManager();
 
         Task task1 = new Task("Тренировка", "Сходить в тренажерный зал", StatusOfTask.NEW);
         taskManager.createTask(task1);
@@ -10,6 +21,7 @@ public class Main {
 
         Epic epic1 = new Epic("Уроки", "Сделать уроки");
         taskManager.createEpic(epic1);
+
 
         Subtask subtask11 = new Subtask("Математика", "Сделать математику", StatusOfTask.NEW, epic1.getId());
         taskManager.createSubtask(subtask11);
@@ -52,6 +64,10 @@ public class Main {
         System.out.println(taskManager.getAllTasks());
         System.out.println(taskManager.getAllEpics());
         System.out.println(taskManager.getAllSubtasks());
+
+        taskManager.findTasklById(1);
+        taskManager.findEpiclById(6);
+        System.out.println(taskManager.getHistory());
 
     }
 }

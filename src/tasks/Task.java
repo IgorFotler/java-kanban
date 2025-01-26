@@ -1,3 +1,7 @@
+package tasks;
+
+import enumeration.StatusOfTask;
+
 public class Task {
 
     private Integer id;
@@ -45,7 +49,7 @@ public class Task {
 
     @Override
     public String toString() {
-        return "Task{" +
+        return "tasks.Task{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
