@@ -14,7 +14,7 @@ public class InMemoryHistoryManager implements HistoryManager {
     private Node<Task> tail;
     private final Map<Integer, Node<Task>> history = new HashMap<>();
 
-    private static class Node<Task> {
+    private static class Node<T> {
         Node<Task> previous;
         Task task;
         Node<Task> next;
