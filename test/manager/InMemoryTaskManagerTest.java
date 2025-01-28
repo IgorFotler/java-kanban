@@ -86,5 +86,53 @@ class InMemoryTaskManagerTest {
         Assertions.assertEquals(actualSubtask.getDescription(), description);
     }
 
+    @Test
+    void testHitorySize() {
+        Task task1 = new Task("Тренировка", "Сходить в тренажерный зал", StatusOfTask.NEW);
+        taskManager.createTask(task1);
+        Task task2 = new Task("Проект", "Выполнить рабочий проект", StatusOfTask.NEW);
+        taskManager.createTask(task2);
 
+        Epic epic1 = new Epic("Уроки", "Сделать уроки");
+        taskManager.createEpic(epic1);
+
+        Subtask subtask11 = new Subtask("Математика", "Сделать математику", StatusOfTask.NEW, epic1.getId());
+        taskManager.createSubtask(subtask11);
+        Subtask subtask12 = new Subtask("Русский язык", "Сделать русский язык", StatusOfTask.NEW, epic1.getId());
+        taskManager.createSubtask(subtask12);
+
+        taskManager.findTasklById(1);
+        taskManager.findTasklById(2);
+        taskManager.findEpiclById(3);
+        taskManager.findSubtasklById(4);
+        taskManager.findSubtasklById(5);
+        taskManager.findSubtasklById(4);
+        taskManager.findTasklById(2);
+        int historySize1 = 5;
+        Assertions.assertEquals(taskManager.getHistory().size(), historySize1);
+
+        taskManager.deleteTask(1);
+        taskManager.deleteEpic(3);
+        int historySize2 = 1;
+        Assertions.assertEquals(taskManager.getHistory().size(), historySize2);
+    }
+
+    @Test
+    void testGetHitory(){
+        Task task1 = new Task("Тренировка", "Сходить в тренажерный зал", StatusOfTask.NEW);
+        taskManager.createTask(task1);
+        Task task2 = new Task("Проект", "Выполнить рабочий проект", StatusOfTask.NEW);
+        taskManager.createTask(task2);
+
+        Epic epic1 = new Epic("Уроки", "Сделать уроки");
+        taskManager.createEpic(epic1);
+
+        taskManager.findTasklById(1);
+        taskManager.findTasklById(2);
+        taskManager.findEpiclById(3);
+
+        String expected = "[tasks.Task{id=1, name='Тренировка', description='Сходить в тренажерный зал', status=NEW}, tasks.Task{id=2, name='Проект', description='Выполнить рабочий проект', status=NEW}, tasks.Epic{id=3, name='Уроки', description='Сделать уроки', status=NEW}]";
+        String actually = taskManager.getHistory().toString();
+        Assertions.assertEquals(expected, actually);
+    }
 }
