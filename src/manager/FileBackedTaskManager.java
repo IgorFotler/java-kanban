@@ -144,8 +144,8 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                         Task task = new Task(lines[2], lines[4], getTaskStatusFromString(lines[3]));
                         task.setId(Integer.parseInt(lines[0]));
                         fileBackedTaskManager.tasks.put(task.getId(), task);
-                        if (fileBackedTaskManager.numberOfId <= task.getId()) {
-                            fileBackedTaskManager.numberOfId = task.getId() + 1;
+                        if (fileBackedTaskManager.numberOfId < task.getId()) {
+                            fileBackedTaskManager.numberOfId = task.getId();
                         }
                         break;
                     case "EPIC":
@@ -153,8 +153,8 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                         epic.setId(Integer.parseInt(lines[0]));
                         epic.setStatus(getTaskStatusFromString(lines[3]));
                         fileBackedTaskManager.epics.put(epic.getId(), epic);
-                        if (fileBackedTaskManager.numberOfId <= epic.getId()) {
-                            fileBackedTaskManager.numberOfId = epic.getId() + 1;
+                        if (fileBackedTaskManager.numberOfId < epic.getId()) {
+                            fileBackedTaskManager.numberOfId = epic.getId();
                         }
                         break;
                     case "SUBTASK":
@@ -164,8 +164,8 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                         fileBackedTaskManager.subtasks.put(subtask.getId(), subtask);
                         Epic epicForSubtask = fileBackedTaskManager.epics.get(subtask.getEpicId());
                         epicForSubtask.addSubTaskId(subtask);
-                        if (fileBackedTaskManager.numberOfId <= subtask.getId()) {
-                            fileBackedTaskManager.numberOfId = subtask.getId() + 1;
+                        if (fileBackedTaskManager.numberOfId < subtask.getId()) {
+                            fileBackedTaskManager.numberOfId = subtask.getId();
                         }
                         break;
                 }
