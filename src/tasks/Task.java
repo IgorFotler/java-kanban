@@ -1,6 +1,7 @@
 package tasks;
 
 import enumeration.StatusOfTask;
+import enumeration.TypeOfTask;
 
 public class Task {
 
@@ -55,5 +56,9 @@ public class Task {
                 ", description='" + description + '\'' +
                 ", status=" + status +
                 '}';
+    }
+
+    public String taskToString() {
+        return String.format("%s,%s,%s,%s,%s,\n", getId(), TypeOfTask.TASK, getName(), getStatus(), getDescription());
     }
 }

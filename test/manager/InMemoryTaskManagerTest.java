@@ -131,7 +131,7 @@ class InMemoryTaskManagerTest {
         taskManager.findTasklById(2);
         taskManager.findEpiclById(3);
 
-        String expected = "[tasks.Task{id=1, name='Тренировка', description='Сходить в тренажерный зал', status=NEW}, tasks.Task{id=2, name='Проект', description='Выполнить рабочий проект', status=NEW}, tasks.Epic{id=3, name='Уроки', description='Сделать уроки', status=NEW}]";
+        String expected = "[tasks.Task{id=1, name='Тренировка', description='Сходить в тренажерный зал', status=NEW}, tasks.Task{id=2, name='Проект', description='Выполнить рабочий проект', status=NEW}, epics.Epic{id=3, name='Уроки', description='Сделать уроки', status=NEW}]";
         String actually = taskManager.getHistory().toString();
         Assertions.assertEquals(expected, actually);
     }
