@@ -156,7 +156,7 @@ public class InMemoryTaskManager implements TaskManager {
         epic.setEndTime(epicStartTime.plus(epicDuration));
     }
 
-    public LocalDateTime getEpicStartTime (Epic epic) {
+    public LocalDateTime getEpicStartTime(Epic epic) {
         List<Integer> epicSubtasksId = epic.getSubtasksId();
         List<LocalDateTime> startsTime = epicSubtasksId.stream()
                 .map(id -> subtasks.get(id).getStartTime())
