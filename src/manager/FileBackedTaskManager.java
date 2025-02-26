@@ -1,5 +1,7 @@
 package manager;
 
+import java.time.Duration;
+
 import enumeration.StatusOfTask;
 import exception.FileManagerFileInitializationException;
 import exception.FileManagerSaveException;
@@ -11,6 +13,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
@@ -22,10 +25,9 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
     @Override
-    public Task createTask(Task newTask) {
-        Task createdTask = super.createTask(newTask);
+    public void createTask(Task newTask) {
+        super.createTask(newTask);
         save();
-        return createdTask;
     }
 
     @Override
@@ -99,24 +101,31 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         save();
     }
 
+    private static LocalDateTime startTimeFromString(String startTime) {
+        if (startTime.equals("null")) {
+            return null;
+        } else {
+            return LocalDateTime.parse(startTime, DTF.getDTF());
+        }
+    }
+
+    private static Duration durationFromString(String duration) {
+        if (duration.equals("null")) {
+            return null;
+        } else {
+            return Duration.ofMinutes(Long.parseLong(duration));
+        }
+    }
+
     private void save() {
         List<Task> allTasks = getAllTasks();
         List<Epic> allEpics = getAllEpics();
         List<Subtask> allSubtasks = getAllSubtasks();
-        final String title = "id,type,name,status,description,epic\n";
+        final String title = "id,type,name,status,description,startTime,duration,epic\n";
         writeStringToFile(title);
-        for (Task task : allTasks) {
-            String taskAsString = task.taskToString();
-            writeStringToFile(taskAsString);
-        }
-        for (Epic epic : allEpics) {
-            String taskAsString = epic.epicToString();
-            writeStringToFile(taskAsString);
-        }
-        for (Subtask subtask : allSubtasks) {
-            String taskAsString = subtask.subtaskToString();
-            writeStringToFile(taskAsString);
-        }
+        allTasks.stream().map(Task::taskToString).forEach(this::writeStringToFile);
+        allEpics.stream().map(Epic::epicToString).forEach(this::writeStringToFile);
+        allSubtasks.stream().map(Subtask::subtaskToString).forEach(this::writeStringToFile);
     }
 
     private void writeStringToFile(String taskAsString) {
@@ -141,7 +150,12 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 String[] lines = line.trim().split(",");
                 switch (lines[1]) {
                     case "TASK":
-                        Task task = new Task(lines[2], lines[4], getTaskStatusFromString(lines[3]));
+                        Task task = new Task(
+                                lines[2],
+                                lines[4],
+                                getTaskStatusFromString(lines[3]),
+                                startTimeFromString(lines[5]),
+                                durationFromString(lines[6]));
                         task.setId(Integer.parseInt(lines[0]));
                         fileBackedTaskManager.tasks.put(task.getId(), task);
                         if (fileBackedTaskManager.numberOfId < task.getId()) {
@@ -149,7 +163,11 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                         }
                         break;
                     case "EPIC":
-                        Epic epic = new Epic(lines[2], lines[4]);
+                        Epic epic = new Epic(
+                                lines[2],
+                                lines[4],
+                                startTimeFromString(lines[5]),
+                                durationFromString(lines[6]));
                         epic.setId(Integer.parseInt(lines[0]));
                         epic.setStatus(getTaskStatusFromString(lines[3]));
                         fileBackedTaskManager.epics.put(epic.getId(), epic);
@@ -158,8 +176,13 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                         }
                         break;
                     case "SUBTASK":
-                        Subtask subtask = new Subtask(lines[2], lines[4], getTaskStatusFromString(lines[3]),
-                                Integer.parseInt(lines[5]));
+                        Subtask subtask = new Subtask(
+                                lines[2],
+                                lines[4],
+                                getTaskStatusFromString(lines[3]),
+                                startTimeFromString(lines[5]),
+                                durationFromString(lines[6]),
+                                Integer.parseInt(lines[7]));
                         subtask.setId(Integer.parseInt(lines[0]));
                         fileBackedTaskManager.subtasks.put(subtask.getId(), subtask);
                         Epic epicForSubtask = fileBackedTaskManager.epics.get(subtask.getEpicId());
