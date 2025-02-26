@@ -2,7 +2,6 @@ package manager;
 
 import enumeration.StatusOfTask;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import tasks.Epic;
 import tasks.Subtask;
@@ -170,9 +169,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
 
         Epic epic1 = new Epic(
                 "Уроки",
-                "Сделать уроки",
-                LocalDateTime.of(LocalDate.of(2025, 3, 9), LocalTime.of(14,0)),
-                Duration.ofMinutes(15)
+                "Сделать уроки"
         );
         taskManager.createEpic(epic1);
 
@@ -180,7 +177,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
         taskManager.findTasklById(2);
         taskManager.findEpiclById(3);
 
-        String expected = "[Task{id=1, name='Тренировка', description='Сходить в тренажерный зал', status=NEW, startTime=13:00:00/09.03.2025, endTime=13:15:00/09.03.2025, duration=15}, Task{id=2, name='Проект', description='Выполнить рабочий проект', status=NEW, startTime=14:00:00/09.03.2025, endTime=14:15:00/09.03.2025, duration=15}, epics.Epic{id=3, name='Уроки', description='Сделать уроки', status=NEW, startTime=14:00:00/09.03.2025, endTime=14:15:00/09.03.2025, duration=15}]";
+        String expected = "[Task{id=1, name='Тренировка', description='Сходить в тренажерный зал', status=NEW, startTime=13:00:00/09.03.2025, duration=15}, Task{id=2, name='Проект', description='Выполнить рабочий проект', status=NEW, startTime=14:00:00/09.03.2025, duration=15}, epics.Epic{id=3, name='Уроки', description='Сделать уроки', status=NEW, startTime=null, duration=null}]";
         String actually = taskManager.getHistory().toString();
         Assertions.assertEquals(expected, actually);
     }

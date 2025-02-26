@@ -20,11 +20,6 @@ public class FileBackedTaskManagerTest {
     TaskManager taskManager;
     File file;
 
-   // @Override
-   // TaskManager getTaskManager() {
-   //     return new FileBackedTaskManager(file);
-   // }
-
     @BeforeEach
     void init() throws IOException {
         file = File.createTempFile("data",".csv");
@@ -52,7 +47,6 @@ public class FileBackedTaskManagerTest {
                 "Уроки",
                 "Сделать уроки");
         taskManager.createEpic(epic1);
-
         Subtask subtask11 = new Subtask(
                 "Математика",
                 "Сделать математику",

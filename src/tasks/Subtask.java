@@ -27,9 +27,8 @@ public class Subtask extends Task {
                 ", name='" + getName() + '\'' +
                 ", description='" + getDescription() + '\'' +
                 ", status=" + getStatus() +
-                ", startTime=" + getStartTime().format(DTF.getDTF()) +
-                ", endTime=" + getEndTime().format(DTF.getDTF()) +
-                ", duration=" + getDuration().toMinutes() +
+                ", startTime=" + startTimeToString(getStartTime()) +
+                ", duration=" + durationToString(getDuration()) +
                 '}';
     }
 
@@ -40,8 +39,8 @@ public class Subtask extends Task {
                 getName(),
                 getStatus(),
                 getDescription(),
-                getStartTime().format(DTF.getDTF()),
-                getDuration().toMinutes(),
+                startTimeToString(getStartTime()),
+                durationToString(getDuration()),
                 getEpicId());
     }
 }

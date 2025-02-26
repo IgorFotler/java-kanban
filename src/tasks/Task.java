@@ -14,7 +14,6 @@ public class Task {
     private String description;
     private StatusOfTask status;
     private LocalDateTime startTime;
-    private LocalDateTime endTime;
     private Duration duration;
 
     public Task(String name, String description, StatusOfTask status, LocalDateTime startTime, Duration duration) {
@@ -23,7 +22,6 @@ public class Task {
         this.status = status;
         this.startTime = startTime;
         this.duration = duration;
-        this.endTime = startTime.plus(duration);
     }
 
     @Override
@@ -33,9 +31,8 @@ public class Task {
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
                 ", status=" + status +
-                ", startTime=" + startTime.format(DTF.getDTF()) +
-                ", endTime=" + endTime.format(DTF.getDTF()) +
-                ", duration=" + duration.toMinutes() +
+                ", startTime=" + startTimeToString(getStartTime()) +
+                ", duration=" + durationToString(getDuration()) +
                 '}';
     }
 
@@ -48,11 +45,11 @@ public class Task {
     }
 
     public LocalDateTime getEndTime() {
-        return endTime;
-    }
-
-    public void setEndTime(LocalDateTime endTime) {
-        this.endTime = endTime;
+        if (startTime != null) {
+            return startTime.plus(duration);
+        } else {
+            return null;
+        }
     }
 
     public Duration getDuration() {
@@ -102,8 +99,24 @@ public class Task {
                 getName(),
                 getStatus(),
                 getDescription(),
-                getStartTime().format(DTF.getDTF()),
-                getDuration().toMinutes()
+                startTimeToString(getStartTime()),
+                durationToString(getDuration())
                 );
+    }
+
+    public String startTimeToString(LocalDateTime startTime) {
+        if (startTime != null) {
+            return getStartTime().format(DTF.getDTF());
+        } else {
+            return "null";
+        }
+    }
+
+    public String durationToString(Duration duration) {
+        if (duration != null) {
+            return Long.toString(getDuration().toMinutes());
+        } else {
+            return "null";
+        }
     }
 }

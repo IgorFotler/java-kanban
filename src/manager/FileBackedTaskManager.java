@@ -101,6 +101,22 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         save();
     }
 
+    private static LocalDateTime startTimeFromString(String startTime) {
+        if (startTime.equals("null")) {
+            return null;
+        } else {
+            return LocalDateTime.parse(startTime, DTF.getDTF());
+        }
+    }
+
+    private static Duration durationFromString(String duration) {
+        if (duration.equals("null")) {
+            return null;
+        } else {
+            return Duration.ofMinutes(Long.parseLong(duration));
+        }
+    }
+
     private void save() {
         List<Task> allTasks = getAllTasks();
         List<Epic> allEpics = getAllEpics();
@@ -138,8 +154,8 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                                 lines[2],
                                 lines[4],
                                 getTaskStatusFromString(lines[3]),
-                                LocalDateTime.parse(lines[5], DTF.getDTF()),
-                                Duration.ofMinutes(Long.parseLong(lines[6])));
+                                startTimeFromString(lines[5]),
+                                durationFromString(lines[6]));
                         task.setId(Integer.parseInt(lines[0]));
                         fileBackedTaskManager.tasks.put(task.getId(), task);
                         if (fileBackedTaskManager.numberOfId < task.getId()) {
@@ -150,8 +166,8 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                         Epic epic = new Epic(
                                 lines[2],
                                 lines[4],
-                                LocalDateTime.parse(lines[5], DTF.getDTF()),
-                                Duration.ofMinutes(Long.parseLong(lines[6])));
+                                startTimeFromString(lines[5]),
+                                durationFromString(lines[6]));
                         epic.setId(Integer.parseInt(lines[0]));
                         epic.setStatus(getTaskStatusFromString(lines[3]));
                         fileBackedTaskManager.epics.put(epic.getId(), epic);
@@ -164,8 +180,8 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                                 lines[2],
                                 lines[4],
                                 getTaskStatusFromString(lines[3]),
-                                LocalDateTime.parse(lines[5], DTF.getDTF()),
-                                Duration.ofMinutes(Long.parseLong(lines[6])),
+                                startTimeFromString(lines[5]),
+                                durationFromString(lines[6]),
                                 Integer.parseInt(lines[7]));
                         subtask.setId(Integer.parseInt(lines[0]));
                         fileBackedTaskManager.subtasks.put(subtask.getId(), subtask);
