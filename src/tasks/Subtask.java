@@ -2,7 +2,6 @@ package tasks;
 
 import enumeration.StatusOfTask;
 import enumeration.TypeOfTask;
-import manager.DTF;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
