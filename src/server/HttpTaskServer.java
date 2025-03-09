@@ -1,4 +1,4 @@
-package Server;
+package server;
 
 import adapter.DurationAdapter;
 import adapter.LocalDateTimeAdapter;

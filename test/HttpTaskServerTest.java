@@ -1,4 +1,4 @@
-import Server.HttpTaskServer;
+import server.HttpTaskServer;
 import com.google.gson.Gson;
 import enumeration.StatusOfTask;
 import manager.Managers;
