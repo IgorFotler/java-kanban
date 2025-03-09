@@ -7,6 +7,7 @@ import exception.TaskNotFoundException;
 import exception.TasksHasInteraction;
 import tasks.Epic;
 import tasks.Subtask;
+import tasks.Task;
 
 import java.io.IOException;
 import java.net.URI;
@@ -104,7 +105,11 @@ public class HttpEpicHandler extends BaseHttpHandler {
         byte[] bodyBytes = exchange.getRequestBody().readAllBytes();
         String bodyString = new String(bodyBytes, StandardCharsets.UTF_8);
         Epic epic = jsonMapper.fromJson(bodyString, Epic.class);
-        taskManager.createEpic(epic);
+        if (epic.getId() == null) {
+            taskManager.createEpic(epic);
+        } else {
+            taskManager.updateEpic(epic);
+        }
         String json = jsonMapper.toJson(epic);
         sendText(exchange, json, 201);
     }

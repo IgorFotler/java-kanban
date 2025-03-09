@@ -39,10 +39,12 @@ public class HttpTaskServer {
 
     public void start() {
         httpServer.start();
+        System.out.println("Сервер успешно запущен");
     }
 
     public void stop(int delay) {
         httpServer.stop(delay);
+        System.out.println("Сервер остановлен");
     }
 
     public Gson getJsonMapper() {
