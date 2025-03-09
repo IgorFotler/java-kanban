@@ -1,5 +1,7 @@
 package manager;
 import enumeration.StatusOfTask;
+import exception.TaskNotFoundException;
+import exception.TasksHasInteraction;
 import tasks.Epic;
 import tasks.Subtask;
 import tasks.Task;
@@ -32,7 +34,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     private boolean hasInteractions(Task task) {
-        return getPrioritizedTasks().stream()
+        boolean timeInteractions = getPrioritizedTasks().stream()
                 .filter(t -> t.getId() != task.getId())
                 .filter(t -> t.getStartTime() != null && task.getStartTime() != null)
                 .anyMatch(t -> ((t.getStartTime().isBefore(task.getStartTime()) && (t.getEndTime().isAfter(task.getStartTime())))) ||
@@ -40,6 +42,10 @@ public class InMemoryTaskManager implements TaskManager {
                         (t.getStartTime().isBefore(task.getStartTime()) && (t.getEndTime().isAfter(task.getEndTime()))) ||
                         (t.getStartTime().isAfter(task.getStartTime()) && (t.getEndTime().isBefore(task.getEndTime()))) ||
                         (t.getStartTime().equals(task.getStartTime())));
+        if (timeInteractions) {
+            throw new TasksHasInteraction("Время новой задачи пересекается со временем добавленных задач");
+        }
+        return timeInteractions;
     }
 
     //Task:_____________________________________________________________________________________________________________
@@ -50,7 +56,9 @@ public class InMemoryTaskManager implements TaskManager {
         newTask.setId(numberOfId);
         if (!hasInteractions(newTask)) {
             tasks.put(newTask.getId(), newTask);
-            prioritizedTasks.add(newTask);
+            if (newTask.getStartTime() != null || newTask.getDuration() != null) {
+                prioritizedTasks.add(newTask);
+            }
         }
     }
 
@@ -59,7 +67,9 @@ public class InMemoryTaskManager implements TaskManager {
         if (tasks.containsKey(task.getId()) && !hasInteractions(task)) {
             prioritizedTasks.remove(tasks.get(task.getId()));
             tasks.put(task.getId(), task);
-            prioritizedTasks.add(task);
+            if (task.getStartTime() != null || task.getDuration() != null) {
+                prioritizedTasks.add(task);
+            }
             return true;
         }
         return false;
@@ -68,6 +78,12 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public Task findTasklById(Integer id) {
         Task task = tasks.get(id);
+
+        if (task == null) {
+            String errorMessage = String.format("Задача с id %d не найдена", id);
+            throw new TaskNotFoundException(errorMessage);
+        }
+
         Task taskForHistory = new Task(task.getName(), task.getDescription(), task.getStatus(), task.getStartTime(), task.getDuration());
         taskForHistory.setId(id);
         historyManager.addToHistory(taskForHistory);
@@ -238,7 +254,9 @@ public class InMemoryTaskManager implements TaskManager {
             Epic epic = epics.get(newSubtask.getEpicId());
             epic.addSubTaskId(newSubtask);
             subtasks.put(newSubtask.getId(), newSubtask);
-            prioritizedTasks.add(newSubtask);
+            if (newSubtask.getStartTime() != null || newSubtask.getDuration() != null) {
+                prioritizedTasks.add(newSubtask);
+            }
             upEpicStatus(epic);
             upEpicTime(epic);
             return newSubtask;
@@ -252,7 +270,9 @@ public class InMemoryTaskManager implements TaskManager {
             if (subtask.getEpicId() == subtasks.get(subtask.getId()).getEpicId()) {
                 prioritizedTasks.remove(subtasks.get(subtask.getId()));
                 subtasks.put(subtask.getId(), subtask);
-                prioritizedTasks.add(subtask);
+                if (subtask.getStartTime() != null || subtask.getDuration() != null) {
+                    prioritizedTasks.add(subtask);
+                }
                 upEpicStatus(epics.get(subtask.getEpicId()));
                 upEpicTime(epics.get(subtask.getEpicId()));
                 return true;
