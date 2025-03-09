@@ -60,7 +60,7 @@ public class Task {
         this.duration = duration;
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
